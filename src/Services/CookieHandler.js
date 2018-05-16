@@ -10,7 +10,6 @@ export default {
         return JSON.parse(cookieValue);
     },
     getCellData:()=>{
-        debugger;
         return new Promise((res, rej) => {
                 setTimeout(() => res("\"Fixed TRN-NPD, found corrupted surveys in DB\n" +
                     "\n" +

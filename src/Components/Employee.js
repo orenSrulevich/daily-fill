@@ -2,6 +2,8 @@ import React, {Component, Fragment} from "react";
 import {Button, Grid, TextField, Typography} from "material-ui";
 import CookieHandler from "../Services/CookieHandler";
 import SpreadSheet from "../Services/SpreadSheet";
+import MultilineInput from "./MultilineInput.js";
+import JiraService from "../Services/JiraService";
 
 const divStyle = {
     margin: '10px',
@@ -14,8 +16,12 @@ class Employee extends Component {
             employeeName: "",
             project: "SX",
             selectedDate: this.getTodayAsString(),
-            dailyText: ""
+            dailyText: "",
+            isLoading: true
         };
+
+        this.handleChange = this.handleChange.bind(this);
+        this.getFromJira = this.getFromJira.bind(this);
     }
 
     projects = [
@@ -42,7 +48,8 @@ class Employee extends Component {
 
         SpreadSheet.getCellData().then((toadyText) => {
                 this.setState({
-                    dailyText: toadyText
+                    dailyText: toadyText,
+                    isLoading:false
                 })
             }
         );
@@ -72,11 +79,21 @@ class Employee extends Component {
         });
     };
 
+    getFromJira = ()=>{
+        JiraService.getTodayWork().then((text)=>{
+            this.setState((currentState)=>{
+                const dailyText = currentState.dailyText + "\n" +text
+                return{ dailyText }
+            })
+        });
+
+    }
+
     render() {
         return (
             <Fragment>
                 <Grid container spacing={8} justify='center'>
-                    <Grid container justify='space-between' direction='column' sm  style={{margin: 50, maxWidth: 500}}>
+                    <Grid container justify='flex-start' direction='column' style={{margin: 50, maxWidth: 500}}>
                         <Typography variant="subheading" gutterBottom>
                             Personal details
                         </Typography>
@@ -122,19 +139,16 @@ class Employee extends Component {
                         <Typography variant="subheading" gutterBottom>
                             Scrum
                         </Typography>
-                        <TextField
-                            id="multiline-flexible"
-                            label="Daily Text"
-                            multiline
-                            rows="16"
-                            fullWidth
-                            rowsMax="16"
-                            value={this.state.dailyText}
-                            onChange={this.handleChange('dailyText')}
-                            margin="normal"
+                        <MultilineInput
+                            isLoading={this.state.isLoading}
+                            dailyText={this.state.dailyText}
+                            handleChange={this.handleChange}
                         />
 
-                        <Button variant="raised" color="primary">From Jira</Button>
+
+                        <Button variant="raised" color="primary"
+                                onClick={this.getFromJira}>
+                            From Jira</Button>
 
 
                     </Grid>
