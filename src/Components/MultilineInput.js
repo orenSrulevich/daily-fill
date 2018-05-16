@@ -5,15 +5,16 @@ import Loading from "./Loading.js";
 class MultilineInput extends Component {
     constructor(props) {
         super(props);
-        console.log(props);
     }
 
 
 
     render() {
-        <h5>{this.props.isLoading}</h5>
         if(this.props.isLoading === true){
-            return(<Loading textToDisplay="Grabbing you daily scrum"></Loading>);
+            return(
+                <Loading textToDisplay="Grabbing your data, please wait">
+                </Loading>
+            );
         }
         return (
             <TextField

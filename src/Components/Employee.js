@@ -5,10 +5,6 @@ import SpreadSheet from "../Services/SpreadSheet";
 import MultilineInput from "./MultilineInput.js";
 import JiraService from "../Services/JiraService";
 
-const divStyle = {
-    margin: '10px',
-};
-
 class Employee extends Component {
     constructor(props) {
         super(props);
@@ -80,10 +76,11 @@ class Employee extends Component {
     };
 
     getFromJira = ()=>{
+        this.setState({isLoading : true})
         JiraService.getTodayWork().then((text)=>{
             this.setState((currentState)=>{
                 const dailyText = currentState.dailyText + "\n" +text
-                return{ dailyText }
+                return{ dailyText,isLoading : false }
             })
         });
 
@@ -97,6 +94,17 @@ class Employee extends Component {
                         <Typography variant="subheading" gutterBottom>
                             Personal details
                         </Typography>
+                        <TextField
+                            id="date"
+                            label="Selected Date"
+                            type="date"
+                            defaultValue={this.state.selectedDate}
+                            onChange={this.handleChange('selectedDate')}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                            //fullWidth
+                        />
                         <TextField
                             id="with-placeholder"
                             label="Employee Name"
@@ -123,17 +131,7 @@ class Employee extends Component {
                                 </option>
                             ))}
                         </TextField>
-                        <TextField
-                            id="date"
-                            label="Selected Date"
-                            type="date"
-                            defaultValue={this.getTodayAsString()}
-                            onChange={this.handleChange('selectedDate')}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            //fullWidth
-                        />
+
                     </Grid>
                     <Grid item sm style={{margin: 50, maxWidth: 500}}>
                         <Typography variant="subheading" gutterBottom>
@@ -145,10 +143,11 @@ class Employee extends Component {
                             handleChange={this.handleChange}
                         />
 
+                        {this.state.isLoading ?
+                            <Button variant="outlined" color="primary" disabled>Import From Jira</Button> :
+                            <Button variant="outlined" color="primary" onClick={this.getFromJira}>Import From Jira</Button>
+                        }
 
-                        <Button variant="raised" color="primary"
-                                onClick={this.getFromJira}>
-                            From Jira</Button>
 
 
                     </Grid>
