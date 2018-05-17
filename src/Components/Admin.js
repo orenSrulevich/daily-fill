@@ -5,6 +5,7 @@ import {
 } from "material-ui";
 import SpreadSheet from "../Services/SpreadSheet";
 import EmailTemplate from "./EmailTemplate";
+import CookieHandler from "../Services/CookieHandler";
 
 
 class Admin extends Component {
@@ -15,11 +16,11 @@ class Admin extends Component {
             emailView: 'Here is where you see the email to be send..',
             toAdress: '',
             selectedDate: this.getTodayAsString(),
-            emailTemplateData : [],
+            emailTemplateData: [],
             isLoading: false,
-            RockyStatus:'',
-            NpdStatus:'',
-            TolunaStatus:'',
+            RockyStatus: '',
+            NpdStatus: '',
+            TolunaStatus: '',
 
         };
     }
@@ -30,6 +31,20 @@ class Admin extends Component {
         {name: 'Oren', didFill: 'No'},
         {name: 'Roy', didFill: 'Yes'}
     ]
+
+    componentDidMount() {
+        //fill data based on cookie
+        const cookieData = CookieHandler.retrieve();
+        if (cookieData) {
+            this.setState({
+                RockyStatus: cookieData.RockyStatus,
+                NpdStatus: cookieData.NpdStatus,
+                TolunaStatus: cookieData.TolunaStatus,
+                toAdress: cookieData.toAdress
+            })
+        }
+    }
+
 
     handleChange = name => event => {
         this.setState({
@@ -50,11 +65,20 @@ class Admin extends Component {
     }
 
     generateEmail = () => {
-        this.setState({isLoading : true})
-        SpreadSheet.GetEmailTemplateData().then((emailTemplateData)=>{
+        this.setState({isLoading: true})
+        //save products Status to cookie
+        CookieHandler.update({
+            RockyStatus: this.state.RockyStatus,
+            NpdStatus: this.state.NpdStatus,
+            TolunaStatus: this.state.TolunaStatus,
+            toAdress: this.state.toAdress
+        });
+
+
+        SpreadSheet.GetEmailTemplateData().then((emailTemplateData) => {
             this.setState({
                 emailTemplateData,
-                isLoading : false
+                isLoading: false
             })
         });
     }
@@ -68,10 +92,10 @@ class Admin extends Component {
                             Status
                         </Typography>
                         <TextField
-                            id="date"
+                            id="selecte-dDate"
                             label="Selected Date"
                             type="date"
-                            defaultValue={this.state.selectedDate}
+                            value={this.state.selectedDate}
                             onChange={this.handleChange('selectedDate')}
                             InputLabelProps={{
                                 shrink: true,
@@ -108,7 +132,9 @@ class Admin extends Component {
                             Email
                         </Typography>
 
+
                         <TextField
+                            id="rocky-status"
                             label="Rocky for PP Client State"
                             margin="normal"
                             fullWidth
@@ -116,6 +142,7 @@ class Admin extends Component {
                             value={this.state.RockyStatus}
                         />
                         <TextField
+                            id="npd-status"
                             label="NPD State"
                             margin="normal"
                             fullWidth
@@ -123,6 +150,7 @@ class Admin extends Component {
                             value={this.state.NpdStatus}
                         />
                         <TextField
+                            id="toluna-status"
                             label="Toluna State"
                             margin="normal"
                             fullWidth
@@ -132,10 +160,12 @@ class Admin extends Component {
 
                         {this.state.isLoading ?
                             <Button variant="raised" color="primary" disabled>Generate Email</Button> :
-                            <Button variant="raised" color="primary" onClick={this.generateEmail}>Generate Email</Button>
+                            <Button variant="raised" color="primary" onClick={this.generateEmail}>Generate
+                                Email</Button>
                         }
 
                         <TextField
+                            id="recipient-email"
                             label="Recipient email"
                             margin="normal"
                             fullWidth
@@ -148,7 +178,7 @@ class Admin extends Component {
                     </Grid>
                 </Grid>
                 <Grid container spacing={8} justify='center'>
-                    <EmailTemplate data={this.state} />
+                    <EmailTemplate data={this.state}/>
                 </Grid>
             </Fragment>
         );

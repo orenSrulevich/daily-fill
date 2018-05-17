@@ -79,7 +79,7 @@ class Employee extends Component {
         this.setState({isLoading : true})
         JiraService.getTodayWork().then((text)=>{
             this.setState((currentState)=>{
-                const dailyText = currentState.dailyText + "\n" +text
+                const dailyText = currentState.dailyText + "\n\n" +text
                 return{ dailyText,isLoading : false }
             })
         });
@@ -144,8 +144,8 @@ class Employee extends Component {
                         />
 
                         {this.state.isLoading ?
-                            <Button variant="outlined" color="primary" disabled>Import From Jira</Button> :
-                            <Button variant="outlined" color="primary" onClick={this.getFromJira}>Import From Jira</Button>
+                            <Button variant="flat" color="primary" disabled>Import From Jira</Button> :
+                            <Button variant="flat" color="primary" onClick={this.getFromJira}>Import From Jira</Button>
                         }
 
 
