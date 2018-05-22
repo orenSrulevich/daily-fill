@@ -2,21 +2,14 @@ import React, {Component, Fragment} from "react";
 import {Button, Grid, TextField, Typography} from "material-ui";
 import CookieHandler from "../Services/CookieHandler";
 import SpreadSheet from "../Services/SpreadSheet";
-import MultilineInput from "./MultilineInput.js";
+import MultilineInput from "../Components/MultilineInput.js";
 import JiraService from "../Services/JiraService";
+import {updateEmployee} from "../Actions/employeeAxtion";
+import {connect} from "react-redux";
 
 class Employee extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            employeeName: "",
-            project: "SX",
-            selectedDate: this.getTodayAsString(),
-            dailyText: "",
-            isLoading: true
-        };
-
-        this.handleChange = this.handleChange.bind(this);
         this.getFromJira = this.getFromJira.bind(this);
     }
 
@@ -36,17 +29,13 @@ class Employee extends Component {
         const cookieData = CookieHandler.retrieve();
 
         if (cookieData) {
-            this.setState({
-                project: cookieData.project,
-                employeeName: cookieData.employeeName
-            })
+            this.props.updateEmployee('project', cookieData.project)
+            this.props.updateEmployee('employeeName', cookieData.employeeName)
         }
 
         SpreadSheet.getCellData().then((toadyText) => {
-                this.setState({
-                    dailyText: toadyText,
-                    isLoading:false
-                })
+                this.props.updateEmployee('dailyText', toadyText)
+                this.props.updateEmployee('isLoading', false)
             }
         );
 
@@ -54,37 +43,22 @@ class Employee extends Component {
     }
 
     saveToCookie = () => {
-        CookieHandler.save(this.state);
+        CookieHandler.save(this.props);
     }
 
-    getTodayAsString = () => {
-        const today = new Date();
-        const dd = today.getDate();
-        let mm = today.getMonth() + 1; //January is 0!
-        if(mm<10){
-            mm = '0' + mm;
-        }
-        const yyyy = today.getFullYear();
-        return `${yyyy}-${mm}-${dd}`;
-
-    }
-
-    handleChange = name => event => {
-        this.setState({
-            [name]: event.target.value,
+    getFromJira = () => {
+        this.props.updateEmployee('isLoading', true)
+        JiraService.getTodayWork().then((text) => {
+            this.props.updateEmployee('dailyText', this.props.dailyText + "\n\n" + text)
+            this.props.updateEmployee('isLoading', false)
         });
+
     };
 
-    getFromJira = ()=>{
-        this.setState({isLoading : true})
-        JiraService.getTodayWork().then((text)=>{
-            this.setState((currentState)=>{
-                const dailyText = currentState.dailyText + "\n\n" +text
-                return{ dailyText,isLoading : false }
-            })
-        });
-
-    }
+    updateDailyScrum = () => {
+        this.saveToCookie();
+        JiraService.setTodayWork(this.props.dailyText);
+    };
 
     render() {
         return (
@@ -98,8 +72,10 @@ class Employee extends Component {
                             id="date"
                             label="Selected Date"
                             type="date"
-                            defaultValue={this.state.selectedDate}
-                            onChange={this.handleChange('selectedDate')}
+                            defaultValue={this.props.selectedDate}
+                            onChange={(e) => {
+                                this.props.updateEmployee('selectedDate', e.target.value)
+                            }}
                             InputLabelProps={{
                                 shrink: true,
                             }}
@@ -110,15 +86,21 @@ class Employee extends Component {
                             label="Employee Name"
                             margin="normal"
                             //fullWidth
-                            onChange={this.handleChange('employeeName')}
-                            value={this.state.employeeName}
+                            onChange={
+                                (e) => {
+                                    this.props.updateEmployee('employeeName', e.target.value)
+                                }
+                            }
+                            value={this.props.employeeName}
                         />
                         <TextField
                             id="select-currency-native"
                             select
                             label="Project"
-                            value={this.state.project}
-                            onChange={this.handleChange('project')}
+                            value={this.props.project}
+                            onChange={(e) => {
+                                this.props.updateEmployee('project', e.target.value)
+                            }}
                             SelectProps={{
                                 native: true,
 
@@ -138,23 +120,22 @@ class Employee extends Component {
                             Scrum
                         </Typography>
                         <MultilineInput
-                            isLoading={this.state.isLoading}
-                            dailyText={this.state.dailyText}
-                            handleChange={this.handleChange}
+                            isLoading={this.props.isLoading}
+                            dailyText={this.props.dailyText}
+                            handleChange={this.props.updateEmployee}
                         />
 
-                        {this.state.isLoading ?
+                        {this.props.isLoading ?
                             <Button variant="flat" color="primary" disabled>Import From Jira</Button> :
                             <Button variant="flat" color="primary" onClick={this.getFromJira}>Import From Jira</Button>
                         }
-
 
 
                     </Grid>
                 </Grid>
                 <Grid container justify="center">
                     <Button variant="raised" color="primary"
-                            onClick={this.saveToCookie}>Submit</Button>
+                            onClick={this.updateDailyScrum}>Submit</Button>
                 </Grid>
             </Fragment>
         );
@@ -164,4 +145,26 @@ class Employee extends Component {
 
 }
 
-export default Employee;
+
+const mapStateToProps = (state) => {
+    // debugger;
+    return {
+        employeeName: state.employeeReducer.employeeName,
+        project: state.employeeReducer.project,
+        selectedDate: state.employeeReducer.selectedDate,
+        dailyText: state.employeeReducer.dailyText,
+        isLoading: state.employeeReducer.isLoading
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateEmployee: (propName, propValue) => {
+            dispatch(updateEmployee(propName, propValue))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Employee)
+
+//export default Employee;

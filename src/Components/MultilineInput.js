@@ -25,7 +25,7 @@ class MultilineInput extends Component {
                 fullWidth
                 rowsMax="16"
                 value={this.props.dailyText}
-                onChange={this.props.handleChange('dailyText')}
+                onChange={(e)=>{this.props.handleChange(("dailyText",e.target.value))}}
                 margin="normal"
             />
         );

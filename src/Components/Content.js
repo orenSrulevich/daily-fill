@@ -1,5 +1,5 @@
 import React from "react";
-import Employee from "./Employee";
+import Employee from "../Containers/Employee";
 import Admin from "./Admin";
 
 export default (props) => {

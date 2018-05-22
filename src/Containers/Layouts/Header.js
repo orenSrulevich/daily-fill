@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 import {AppBar, Paper, Tabs, Toolbar, Typography} from "material-ui";
 import {Tab} from "material-ui/Tabs";
+import {connect} from "react-redux";
+import {setTab} from "../../Actions/uiActions";
 
 class Header extends Component {
     constructor(props) {
@@ -21,13 +23,14 @@ class Header extends Component {
                           textColor="primary"
                           centered>
                         <Tab label="Employee" onClick={
-                            ()=>{
-                                this.props.onTabClick(0)
+                            () => {
+                                this.props.setTab(0)
                             }}
                         />
                         <Tab label="Scrum Master" onClick={
-                            ()=>{
-                                this.props.onTabClick(1)}}
+                            () => {
+                                this.props.setTab(1)
+                            }}
                         />
                     </Tabs>
                 </Paper>
@@ -35,4 +38,17 @@ class Header extends Component {
     }
 }
 
-export default Header;
+const mapStateToProps = (state) => {
+    return {};
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setTab: (tabIndex) => {
+            dispatch(setTab(tabIndex))
+        }
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header)
+//export default Header;

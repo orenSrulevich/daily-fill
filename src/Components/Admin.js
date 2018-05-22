@@ -1,6 +1,6 @@
 import React, {Component, Fragment} from "react";
 import {
-    Button, Grid, Input, Paper, Table, TableBody, TableCell, TableHead, TableRow, TextField,
+    Button, Grid, Paper, Table, TableBody, TableCell, TableHead, TableRow, TextField,
     Typography
 } from "material-ui";
 import SpreadSheet from "../Services/SpreadSheet";
@@ -46,7 +46,8 @@ class Admin extends Component {
     }
 
 
-    handleChange = name => event => {
+    handleChange = (event) => {
+        const name= event.target.name;
         this.setState({
             [name]: event.target.value,
         });
@@ -96,7 +97,8 @@ class Admin extends Component {
                             label="Selected Date"
                             type="date"
                             value={this.state.selectedDate}
-                            onChange={this.handleChange('selectedDate')}
+                            name="selectedDate"
+                            onChange={this.handleChange}
                             InputLabelProps={{
                                 shrink: true,
                             }}
@@ -138,7 +140,8 @@ class Admin extends Component {
                             label="Rocky for PP Client State"
                             margin="normal"
                             fullWidth
-                            onChange={this.handleChange('RockyStatus')}
+                            name="RockyStatus"
+                            onChange={this.handleChange}
                             value={this.state.RockyStatus}
                         />
                         <TextField
@@ -146,7 +149,8 @@ class Admin extends Component {
                             label="NPD State"
                             margin="normal"
                             fullWidth
-                            onChange={this.handleChange('NpdStatus')}
+                            name="NpdStatus"
+                            onChange={this.handleChange}
                             value={this.state.NpdStatus}
                         />
                         <TextField
@@ -154,7 +158,8 @@ class Admin extends Component {
                             label="Toluna State"
                             margin="normal"
                             fullWidth
-                            onChange={this.handleChange('TolunaStatus')}
+                            name="TolunaStatus"
+                            onChange={this.handleChange}
                             value={this.state.TolunaStatus}
                         />
 
@@ -169,7 +174,8 @@ class Admin extends Component {
                             label="Recipient email"
                             margin="normal"
                             fullWidth
-                            onChange={this.handleChange('toAdress')}
+                            name="toAdress"
+                            onChange={this.handleChange}
                             value={this.state.toAdress}
                         />
 

@@ -5,12 +5,18 @@ export default {
     save: (data) => {
         setCookie(cookieName, JSON.stringify(data));
     },
-    retrieve:()=>{
-        const cookieValue =  getCookie(cookieName);
-        return JSON.parse(cookieValue);
+    retrieve: () => {
+        const cookieValue = getCookie(cookieName);
+        if (!cookieValue)
+            return {};
+        return JSON.parse(cookieValue)
     },
-    update:(data)=>{
+    update: (data) => {
+        const cookieValue = getCookie(cookieName);
+        if (!cookieValue) {
+            return;
+        }
         let currentCookie = JSON.parse(getCookie(cookieName));
-        setCookie(cookieName, JSON.stringify({...currentCookie,...data}));
+        setCookie(cookieName, JSON.stringify({...currentCookie, ...data}));
     }
 }
