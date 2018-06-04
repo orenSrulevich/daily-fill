@@ -1,6 +1,3 @@
-import CookieHandler from "../Services/CookieHandler";
-import SpreadSheet from "../Services/SpreadSheet";
-
 const getTodayAsString = () => {
     const today = new Date();
     const dd = today.getDate();
@@ -12,30 +9,6 @@ const getTodayAsString = () => {
     return `${yyyy}-${mm}-${dd}`;
 
 }
-
-/*const employeeReducerInitialState = () => {
-    let baseInitObject = {
-        employeeName: "Oren",
-        project: "SX",
-        selectedDate: getTodayAsString(),
-        dailyText: "",
-        isLoading: true
-    }
-
-    const cookieData = CookieHandler.retrieve();
-
-    if (cookieData) {
-        baseInitObject.employeeName = cookieData.employeeName
-        baseInitObject.project = cookieData.project
-    }
-
-    SpreadSheet.getCellData().then((toadyText) => {
-            baseInitObject.dailyText = toadyText;
-        }
-    );
-
-    return baseInitObject;
-};*/
 
 const employeeReducerInitialState = {
     employeeName: "Oren",

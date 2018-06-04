@@ -33,18 +33,60 @@ class Employee extends Component {
             this.props.updateEmployee('employeeName', cookieData.employeeName)
         }
 
-        SpreadSheet.getCellData().then((toadyText) => {
-                this.props.updateEmployee('dailyText', toadyText)
-                this.props.updateEmployee('isLoading', false)
-            }
-        );
-
+        SpreadSheet.initGapi(() => {
+            SpreadSheet.getCellData().then((data) => {
+                    const text = this.extractTodayText(data);
+                    this.props.updateEmployee('dailyText', text)
+                    this.props.updateEmployee('isLoading', false)
+                }
+            );
+        });
 
     }
+
+    getTodayAsString = () => {
+        let d = new Date();
+        return d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+    }
+
+    extractTodayText = (data) => {
+        const name = this.props.employeeName || "oren";
+        const values = data.result.values[0];
+        const today = this.getTodayAsString();
+        let columnIndex = -1;
+        for (var i = 0; i < values.length; i++) {
+            if (values[i].toLowerCase() === name.toLowerCase()) {
+                columnIndex = i;
+                break;
+            }
+        }
+
+        if (columnIndex === -1) {
+            return ""
+        }
+
+        let rowIndex = -1;
+        for (var j = 0; j < data.result.values.length; j++) {
+            const firstDataPoint = data.result.values[j][0];
+            if (firstDataPoint !== "Weekend") {
+                if (firstDataPoint === today) {
+                    rowIndex = j;
+                    break;
+                }
+            }
+        }
+
+        if (rowIndex === -1) {
+            return ""
+        }
+
+        return data.result.values[rowIndex][columnIndex];
+
+    };
 
     saveToCookie = () => {
         CookieHandler.save(this.props);
-    }
+    };
 
     getFromJira = () => {
         this.props.updateEmployee('isLoading', true)
@@ -52,12 +94,13 @@ class Employee extends Component {
             this.props.updateEmployee('dailyText', this.props.dailyText + "\n\n" + text)
             this.props.updateEmployee('isLoading', false)
         });
-
     };
 
     updateDailyScrum = () => {
         this.saveToCookie();
-        JiraService.setTodayWork(this.props.dailyText);
+        //JiraService.setTodayWork(this.props.dailyText);
+        SpreadSheet.updatCellData(this.props.dailyText);
+
     };
 
     render() {
@@ -140,8 +183,6 @@ class Employee extends Component {
             </Fragment>
         );
     }
-
-    static propTypes = {};
 
 }
 

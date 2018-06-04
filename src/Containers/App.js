@@ -4,6 +4,7 @@ import {connect, Provider} from "react-redux";
 import Header from "./Layouts/Header";
 import Content from "../Components/Content";
 import Loading from "../Components/Loading";
+import MyForm from "../Components/MyForm.js";
 
 
 class App extends Component {
@@ -27,6 +28,7 @@ class App extends Component {
                 <Fragment>
                     <Header/>
                     <Content tabValue={this.props.tabValue}/>
+                    {/*<MyForm />*/}
                 </Fragment>
             </div>)
 
