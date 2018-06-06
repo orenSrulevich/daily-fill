@@ -4,7 +4,7 @@ const appInitialState = {
 
 export default (state = appInitialState, action) => {
     switch (action.type) {
-        case "UPDATE_SP_DATA":
+        case "UPDATE_APP_DATA":
             let {propName, propValue} = action.payload;
             return {
                 ...state,

@@ -20,9 +20,13 @@ class App extends Component {
         const dateAsString = Common.getTodayAsString();
         SpreadSheet.initGapi(() => {
             SpreadSheet.getSpredSheetData().then((data) => {
-                    this.props.updateAppData('spreadsheetData',data)
+                    this.props.updateAppData('spreadsheetData',data);
+
+                    // shouldn't be here
                     const text = Common.extractSpecificDateText(data,dateAsString);
                     this.props.updateEmployee("dailyText",text);
+
+
                 }
             );
         });

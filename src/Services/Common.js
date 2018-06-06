@@ -1,7 +1,24 @@
 export default {
     getTodayAsString : () => {
         let d = new Date();
-        return d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
+
+        let day  = d.getDate()
+        if(day < 10){
+            day = "0" + day;
+        }
+
+        let month  = d.getMonth() +1;
+        if(day < 10){
+            month = "0" + month;
+        }
+
+        let year = d.getFullYear();
+
+        const date = `${day}/${month}/${year}`;
+
+        console.log("date : " , date);
+
+        return date;
     },
     extractSpecificDateText : (rowData,dateAsString,employeeName) => {
         const name = employeeName || "oren";
