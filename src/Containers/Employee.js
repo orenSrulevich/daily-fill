@@ -28,61 +28,19 @@ class Employee extends Component {
         //fill data based on cookie
         const cookieData = CookieHandler.retrieve();
 
+        var today = this.getTodayAsString();
+        this.props.updateEmployee('selectedDate', today)
+
         if (cookieData) {
             this.props.updateEmployee('project', cookieData.project)
             this.props.updateEmployee('employeeName', cookieData.employeeName)
         }
-
-        SpreadSheet.initGapi(() => {
-            SpreadSheet.getCellData().then((data) => {
-                    const text = this.extractTodayText(data);
-                    this.props.updateEmployee('dailyText', text)
-                    this.props.updateEmployee('isLoading', false)
-                }
-            );
-        });
-
     }
 
     getTodayAsString = () => {
         let d = new Date();
         return d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
     }
-
-    extractTodayText = (data) => {
-        const name = this.props.employeeName || "oren";
-        const values = data.result.values[0];
-        const today = this.getTodayAsString();
-        let columnIndex = -1;
-        for (var i = 0; i < values.length; i++) {
-            if (values[i].toLowerCase() === name.toLowerCase()) {
-                columnIndex = i;
-                break;
-            }
-        }
-
-        if (columnIndex === -1) {
-            return ""
-        }
-
-        let rowIndex = -1;
-        for (var j = 0; j < data.result.values.length; j++) {
-            const firstDataPoint = data.result.values[j][0];
-            if (firstDataPoint !== "Weekend") {
-                if (firstDataPoint === today) {
-                    rowIndex = j;
-                    break;
-                }
-            }
-        }
-
-        if (rowIndex === -1) {
-            return ""
-        }
-
-        return data.result.values[rowIndex][columnIndex];
-
-    };
 
     saveToCookie = () => {
         CookieHandler.save(this.props);
@@ -190,11 +148,12 @@ class Employee extends Component {
 const mapStateToProps = (state) => {
     // debugger;
     return {
-        employeeName: state.employeeReducer.employeeName,
-        project: state.employeeReducer.project,
-        selectedDate: state.employeeReducer.selectedDate,
-        dailyText: state.employeeReducer.dailyText,
-        isLoading: state.employeeReducer.isLoading
+        employeeName: state.employee.employeeName,
+        project: state.employee.project,
+        selectedDate: state.employee.selectedDate,
+        dailyText: state.employee.dailyText,
+        isLoading: state.employee.isLoading,
+        spreadsheetData : state.app.spreadsheetData
     };
 };
 

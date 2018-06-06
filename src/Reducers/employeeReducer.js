@@ -1,23 +1,30 @@
-const getTodayAsString = () => {
-    const today = new Date();
-    const dd = today.getDate();
-    let mm = today.getMonth() + 1; //January is 0!
-    if (mm < 10) {
-        mm = '0' + mm;
+import SpreadSheet from "../Services/SpreadSheet";
+import CookieHandler from "../Services/CookieHandler";
+import Common from "../Services/Common"
+
+const init = () => {
+    let employeeReducerInitialState = {
+        employeeName: "",
+        project: "",
+        selectedDate: "",
+        dailyText: "",
+        isLoading: false
     }
-    const yyyy = today.getFullYear();
-    return `${yyyy}-${mm}-${dd}`;
 
+    const cookieData = CookieHandler.retrieve();
+
+    var today = Common.getTodayAsString();
+    employeeReducerInitialState.selectedDate = today;
+
+    if (cookieData) {
+        employeeReducerInitialState.project = cookieData.project;
+        employeeReducerInitialState.employeeName = cookieData.employeeName;
+    }
+
+    return employeeReducerInitialState;
 }
 
-const employeeReducerInitialState = {
-    employeeName: "Oren",
-    project: "SX",
-    selectedDate: getTodayAsString(),
-    dailyText: "",
-    isLoading: true
-}
-
+const employeeReducerInitialState = init();
 
 export default (state = employeeReducerInitialState, action) => {
     switch (action.type) {

@@ -5,24 +5,32 @@ import Header from "./Layouts/Header";
 import Content from "../Components/Content";
 import Loading from "../Components/Loading";
 import MyForm from "../Components/MyForm.js";
-
+import {updateApp} from "../Actions/appAction";
+import SpreadSheet from "../Services/SpreadSheet";
+import {updateEmployee} from "../Actions/employeeAxtion";
+import Common from "../Services/Common";
 
 class App extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            isLoading: true
-        }
     };
 
+
     componentDidMount() {
-        this.setState({isLoading: false});
+        const dateAsString = Common.getTodayAsString();
+        SpreadSheet.initGapi(() => {
+            SpreadSheet.getSpredSheetData().then((data) => {
+                    this.props.updateAppData('spreadsheetData',data)
+                    const text = Common.extractSpecificDateText(data,dateAsString);
+                    this.props.updateEmployee("dailyText",text);
+                }
+            );
+        });
+
     }
 
+
     render() {
-        if (this.state.isLoading === true) {
-            return (<Loading textToDisplay="Loading"></Loading>)
-        }
         return (
             <div className="App">
                 <Fragment>
@@ -37,11 +45,20 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        tabValue: state.uiReducer.tabValue
+        tabValue: state.ui.tabValue
     }
 };
 
-const mapDispatchToProps = () => ({});
+const mapDispatchToProps = (dispatch) => {
+    return {
+        updateAppData: (propName, propValue) => {
+            dispatch(updateApp(propName, propValue))
+        },
+        updateEmployee: (propName, propValue) => {
+            dispatch(updateEmployee(propName, propValue))
+        },
+    }
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
 

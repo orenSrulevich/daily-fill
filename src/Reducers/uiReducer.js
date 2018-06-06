@@ -1,5 +1,6 @@
 const uiReducerInitialState = {
-    tabValue: 0
+    tabValue: 0,
+    isLoading : true
 };
 
 export default (state = uiReducerInitialState, action) => {

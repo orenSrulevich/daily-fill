@@ -8,11 +8,15 @@ import thunk from "redux-thunk";
 import uiReducer from "./Reducers/uiReducer";
 import employeeReducer from "./Reducers/employeeReducer";
 import {reducer as formReducer} from "redux-form";
+import adminReducer from "./Reducers/adminReducer";
+import appReducer from "./Reducers/appReducer";
 
 //const combinedReducers = combineReducers({mathReducer, userReducer});
 const combinedReducers = combineReducers({
-    uiReducer,
-    employeeReducer,
+    ui:uiReducer,
+    employee:employeeReducer,
+    app:appReducer,
+    admin:adminReducer,
     form: formReducer
 });
 

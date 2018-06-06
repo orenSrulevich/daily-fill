@@ -63,9 +63,11 @@ handleClientLoad();
 
 export default {
     initGapi:(callBack)=>{
+        console.log('initGapi')
       window.gapi.load('client:auth2', ()=>{initClient(callBack);});
     },
-    getCellData: () => {
+    getSpredSheetData: () => {
+        console.log('getSpredSheetData')
         window.gapi.auth2.getAuthInstance().signIn();
         return window.gapi.client.sheets.spreadsheets.values.get(params);;
     },
