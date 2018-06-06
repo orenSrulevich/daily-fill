@@ -28,7 +28,7 @@ const extractFillingData = (data) => {
     }
     const names = data.result.values[0].filter(name => name !== "Date");
     let returnObj = [];
-    const dateAsString = Common.getTodayAsString();
+    const dateAsString = Common.getTodayAsString(true);
 
     names.map((name)=>{
         const text = Common.extractSpecificDateText(data,dateAsString,name);

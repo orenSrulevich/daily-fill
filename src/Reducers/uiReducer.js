@@ -1,5 +1,5 @@
 const uiReducerInitialState = {
-    tabValue: 1,
+    tabValue: 0,
     isLoading : true
 };
 

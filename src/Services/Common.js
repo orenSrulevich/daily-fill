@@ -1,27 +1,29 @@
 export default {
-    getTodayAsString : () => {
+    getTodayAsString : (useIsraeliFormat) => {
         let d = new Date();
 
-        let day  = d.getDate()
-        if(day < 10){
-            day = "0" + day;
-        }
-
+        let day  = d.getDate();
         let month  = d.getMonth() +1;
-        if(day < 10){
-            month = "0" + month;
-        }
-
         let year = d.getFullYear();
 
-        const date = `${day}/${month}/${year}`;
+        let date = `${day}/${month}/${year}`;
+
+        if(!useIsraeliFormat){
+            if(day < 10){
+                day = "0" + day;
+            }
+            if(month < 10){
+                month = "0" + month;
+            }
+            date = `${year}-${month}-${day}`;
+        }
 
         console.log("date : " , date);
 
         return date;
     },
     extractSpecificDateText : (rowData,dateAsString,employeeName) => {
-        const name = employeeName || "oren";
+        const name = employeeName || "Oren";
         const values = rowData.result.values[0];
 
         let columnIndex = -1;

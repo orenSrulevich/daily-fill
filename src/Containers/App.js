@@ -57,12 +57,9 @@ const mapDispatchToProps = (dispatch) => {
     return {
         updateAppData: (propName, propValue) => {
             dispatch(updateApp(propName, propValue))
-        },
-        updateEmployee: (propName, propValue) => {
-            dispatch(updateEmployee(propName, propValue))
-        },
+        }
     }
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);
 

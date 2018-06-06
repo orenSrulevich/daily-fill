@@ -7,6 +7,7 @@ import SpreadSheet from "../Services/SpreadSheet";
 import EmailTemplate from "../Components/EmailTemplate";
 import CookieHandler from "../Services/CookieHandler";
 import {connect} from "react-redux";
+import {updateAdmin} from "../Actions/adminAction";
 
 
 class Admin extends Component {
@@ -14,38 +15,10 @@ class Admin extends Component {
         super(props);
     }
 
-    componentDidMount() {
-        //fill data based on cookie
-        const cookieData = CookieHandler.retrieve();
-        if (cookieData) {
-            this.setState({
-                RockyStatus: cookieData.RockyStatus,
-                NpdStatus: cookieData.NpdStatus,
-                TolunaStatus: cookieData.TolunaStatus,
-                toAdress: cookieData.toAdress
-            })
-        }
-    }
-
-
     handleChange = (event) => {
         const name= event.target.name;
-        this.setState({
-            [name]: event.target.value,
-        });
+        this.props.updateAdminData(name,event.target.value);
     };
-
-    getTodayAsString = () => {
-        const today = new Date();
-        const dd = today.getDate();
-        let mm = today.getMonth() + 1; //January is 0!
-        if (mm < 10) {
-            mm = '0' + mm;
-        }
-        const yyyy = today.getFullYear();
-        return `${yyyy}-${mm}-${dd}`;
-
-    }
 
     generateEmail = () => {
         //save products Status to cookie
@@ -73,7 +46,7 @@ class Admin extends Component {
                             Status
                         </Typography>
                         <TextField
-                            id="selecte-dDate"
+                            id="selected-date"
                             label="Selected Date"
                             type="date"
                             value={this.props.selectedDate}
@@ -194,7 +167,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-
+        updateAdminData: (propName, propValue) => {
+            dispatch(updateAdmin(propName, propValue))
+        }
     }
 }
 

@@ -5,7 +5,7 @@ import Common from "../Services/Common"
 const init = () => {
     let employeeReducerInitialState = {
         employeeName: "",
-        project: "",
+        project: "SX",
         selectedDate: "",
         dailyText: "",
         isLoading: false
@@ -33,9 +33,21 @@ export default (state = employeeReducerInitialState, action) => {
             return {
                 ...state,
                 [propName]: propValue,
-            }
+            };
             break;
+        case "UPDATE_APP_DATA":
+            if (action.payload.propName === "spreadsheetData") {
+                const dailyText = Common.extractSpecificDateText(
+                    action.payload.propValue,
+                    Common.getTodayAsString(true),
+                    "Oren");
+                return{
+                    ...state,
+                    dailyText
+                };
+            }
+            return {...state};
         default :
-            return {...state}
+            return {...state};
     }
 };

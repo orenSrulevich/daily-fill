@@ -24,24 +24,6 @@ class Employee extends Component {
         }
     ];
 
-    componentDidMount() {
-        //fill data based on cookie
-        const cookieData = CookieHandler.retrieve();
-
-        var today = this.getTodayAsString();
-        this.props.updateEmployee('selectedDate', today)
-
-        if (cookieData) {
-            this.props.updateEmployee('project', cookieData.project)
-            this.props.updateEmployee('employeeName', cookieData.employeeName)
-        }
-    }
-
-    getTodayAsString = () => {
-        let d = new Date();
-        return d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear();
-    }
-
     saveToCookie = () => {
         CookieHandler.save(this.props);
     };
@@ -122,10 +104,9 @@ class Employee extends Component {
                         </Typography>
                         <MultilineInput
                             isLoading={this.props.isLoading}
-                            dailyText={this.props.dailyText}
+                            value={this.props.dailyText}
                             handleChange={this.props.updateEmployee}
                         />
-
                         {this.props.isLoading ?
                             <Button variant="flat" color="primary" disabled>Import From Jira</Button> :
                             <Button variant="flat" color="primary" onClick={this.getFromJira}>Import From Jira</Button>
