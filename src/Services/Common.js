@@ -1,12 +1,15 @@
 export default {
-    getTodayAsString : (useIsraeliFormat) => {
-        let d = new Date();
+    /// return data as string (default today)
+    /// if (!useIsraeliFormat) => YYYY-MM-DD
+    /// if(useIsraeliFormat) => DD/MM/YYY
+    getDateAsString : (useIsraeliFormat, date) => {
+        let d = date || new Date();
 
         let day  = d.getDate();
         let month  = d.getMonth() +1;
         let year = d.getFullYear();
 
-        let date = `${day}/${month}/${year}`;
+        let returnDate = `${day}/${month}/${year}`;
 
         if(!useIsraeliFormat){
             if(day < 10){
@@ -15,13 +18,15 @@ export default {
             if(month < 10){
                 month = "0" + month;
             }
-            date = `${year}-${month}-${day}`;
+            returnDate = `${year}-${month}-${day}`;
         }
 
-        console.log("date : " , date);
+        console.log("date : " , returnDate);
 
-        return date;
+        return returnDate;
     },
+
+    /// Retrieve the text from the cell, return Empty string by default
     extractSpecificDateText : (rowData,dateAsString,employeeName) => {
         const name = employeeName || "Oren";
         const values = rowData.result.values[0];
@@ -53,7 +58,8 @@ export default {
             return ""
         }
 
-        return rowData.result.values[rowIndex][columnIndex];
+        const cellText = rowData.result.values[rowIndex][columnIndex];
+        return cellText || "";
 
     }
 }

@@ -13,7 +13,7 @@ const init = () => {
 
     const cookieData = CookieHandler.retrieve();
 
-    var today = Common.getTodayAsString();
+    var today = Common.getDateAsString();
     employeeReducerInitialState.selectedDate = today;
 
     if (cookieData) {
@@ -39,7 +39,7 @@ export default (state = employeeReducerInitialState, action) => {
             if (action.payload.propName === "spreadsheetData") {
                 const dailyText = Common.extractSpecificDateText(
                     action.payload.propValue,
-                    Common.getTodayAsString(true),
+                    Common.getDateAsString(true),
                     "Oren");
                 return{
                     ...state,
@@ -51,3 +51,5 @@ export default (state = employeeReducerInitialState, action) => {
             return {...state};
     }
 };
+
+

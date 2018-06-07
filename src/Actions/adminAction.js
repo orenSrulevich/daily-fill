@@ -9,3 +9,9 @@ export function updateAdmin(propName,propValue) {
         }
     }
 }
+export function toggleEmailTemplateView() {
+    return {
+        type:"TOGGLE_EMAIL_VIEW"
+    }
+}
+
