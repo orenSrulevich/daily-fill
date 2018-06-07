@@ -71,13 +71,20 @@ export default {
         window.gapi.auth2.getAuthInstance().signIn();
         return window.gapi.client.sheets.spreadsheets.values.get(params);;
     },
-    updatCellData: (newText)=>{
+    updatCellData: (newText,range)=>{
         window.gapi.auth2.getAuthInstance().signIn();
+        const localParams = {
+            ...params,
+            valueInputOption: "RAW",
+            range:`'Q2 2018'!${range.col}${range.row}`
+        }
+        let values = new Array(1);
+        values[0] = new Array(1);
+        values[0][0] = newText;
         const valueRangeBody = {
-            range:"Q2 2018!C:65",
-            values:["Oren"]
-        };//C65
-        return window.gapi.client.sheets.spreadsheets.values.update(params, valueRangeBody);
+            "values":values
+        };
+        return window.gapi.client.sheets.spreadsheets.values.update(localParams, valueRangeBody);
     },
     GetEmailTemplateData: () => {
         return new Promise((res, rej) => {

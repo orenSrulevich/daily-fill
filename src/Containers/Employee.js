@@ -6,6 +6,7 @@ import MultilineInput from "../Components/MultilineInput.js";
 import JiraService from "../Services/JiraService";
 import {updateEmployee} from "../Actions/employeeAxtion";
 import {connect} from "react-redux";
+import Common from "../Services/Common";
 
 class Employee extends Component {
     constructor(props) {
@@ -38,8 +39,16 @@ class Employee extends Component {
 
     updateDailyScrum = () => {
         this.saveToCookie();
-        //JiraService.setTodayWork(this.props.dailyText);
-        SpreadSheet.updatCellData(this.props.dailyText);
+        const range = Common.getCellRange("Oren",this.props.spreadsheetData,Common.getDateAsString(true));
+        const spredSheetRange = {
+            row : range.row + 1,
+            col: Common.getColumnAsLatter(range.col)
+        };
+        SpreadSheet.updatCellData(this.props.dailyText,spredSheetRange).then((d) => {
+            console.log("worked : ", d)
+        }, (d) => {
+            console.log("not working : ", d)
+        });
 
     };
 
@@ -134,7 +143,7 @@ const mapStateToProps = (state) => {
         selectedDate: state.employee.selectedDate,
         dailyText: state.employee.dailyText,
         isLoading: state.employee.isLoading,
-        spreadsheetData : state.app.spreadsheetData
+        spreadsheetData: state.app.spreadsheetData
     };
 };
 
