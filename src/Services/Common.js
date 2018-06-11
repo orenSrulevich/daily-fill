@@ -35,57 +35,81 @@ const getCellRange = (name, rowData, dateAsString) => {
     }
 
     return returnObj;
-}
+};
+const getDateAsString = (useIsraeliFormat, date) => {
+    let d = date || new Date();
 
+    let day = d.getDate();
+    let month = d.getMonth() + 1;
+    let year = d.getFullYear();
+
+    let returnDate = `${day}/${month}/${year}`;
+
+    if (!useIsraeliFormat) {
+    if (day < 10) {
+    day = "0" + day;
+    }
+    if (month < 10) {
+    month = "0" + month;
+    }
+    returnDate = `${year}-${month}-${day}`;
+    }
+
+    console.log("date : ", returnDate);
+
+    return returnDate;
+    };
+const extractSpecificDateText = (rowData, dateAsString, employeeName) => {
+    const name = employeeName || "Oren";
+
+    const range = getCellRange(name, rowData, dateAsString)
+
+    if (range.row == -1 || range.col == -1) {
+        return "";
+    }
+
+    const cellText = rowData.result.values[range.row][range.col];
+    return cellText || "";
+
+};
 
 export default {
     /// return data as string (default today)
     /// if (!useIsraeliFormat) => YYYY-MM-DD
     /// if(useIsraeliFormat) => DD/MM/YYY
-    getDateAsString: (useIsraeliFormat, date) => {
-        let d = date || new Date();
-
-        let day = d.getDate();
-        let month = d.getMonth() + 1;
-        let year = d.getFullYear();
-
-        let returnDate = `${day}/${month}/${year}`;
-
-        if (!useIsraeliFormat) {
-            if (day < 10) {
-                day = "0" + day;
-            }
-            if (month < 10) {
-                month = "0" + month;
-            }
-            returnDate = `${year}-${month}-${day}`;
-        }
-
-        console.log("date : ", returnDate);
-
-        return returnDate;
-    },
-
+    getDateAsString:getDateAsString,
     getCellRange : getCellRange,
 
     /// Retrieve the text from the cell, return Empty string by default
-    extractSpecificDateText: (rowData, dateAsString, employeeName) => {
-        const name = employeeName || "Oren";
-
-        const range = getCellRange(name, rowData, dateAsString)
-
-        if (range.row == -1 || range.col == -1) {
-            return "";
-        }
-
-        const cellText = rowData.result.values[range.row][range.col];
-        return cellText || "";
-
-    },
+    extractSpecificDateText: extractSpecificDateText,
 
     /// get column Latter based on index up tp 20
     getColumnAsLatter: (index) => {
         const dictionary = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"];
         return dictionary[index];
+    },
+
+
+    extractFillingData : (data,date) => {
+        if (!data) {
+            return [];
+        }
+        const names = data.result.values[0].filter(name => name !== "Date");
+        let returnObj = {fillingData: [], emailTemplateData: []};
+        const dateAsString = getDateAsString(true,date);
+        names.map((name) => {
+            const text = extractSpecificDateText(data, dateAsString, name);
+            //console.log(name,":",text);
+            returnObj.fillingData.push({
+                name: name,
+                didFill: text !== "" ? 'Yes' : 'No'
+            });
+            returnObj.emailTemplateData.push({
+                name: name,
+                text
+            });
+        });
+
+        return returnObj;
     }
 }

@@ -18,10 +18,6 @@ class Employee extends Component {
         {
             value: 'SX',
             label: 'sx',
-        },
-        {
-            value: 'PMC',
-            label: 'pmc',
         }
     ];
 
@@ -31,10 +27,12 @@ class Employee extends Component {
 
     getFromJira = () => {
         this.props.updateEmployee('isLoading', true)
-        JiraService.getTodayWork().then((text) => {
-            this.props.updateEmployee('dailyText', this.props.dailyText + "\n\n" + text)
-            this.props.updateEmployee('isLoading', false)
-        });
+        JiraService.getTodayWork();
+
+        //     .then((text) => {
+        //     this.props.updateEmployee('dailyText', this.props.dailyText + "\n\n" + text)
+        //     this.props.updateEmployee('isLoading', false)
+        // });
     };
 
     updateDailyScrum = () => {

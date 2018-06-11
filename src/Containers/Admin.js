@@ -7,13 +7,29 @@ import SpreadSheet from "../Services/SpreadSheet";
 import EmailTemplate from "../Components/EmailTemplate";
 import CookieHandler from "../Services/CookieHandler";
 import {connect} from "react-redux";
-import {toggleEmailTemplateView, updateAdmin} from "../Actions/adminAction";
+import {toggleEmailTemplateView, updateAdmin, updateDate} from "../Actions/adminAction";
+import Common from "../Services/Common";
 
 
 class Admin extends Component {
     constructor(props) {
         super(props);
     }
+
+    handleDateChange = (event)=>{
+        // update store
+        this.handleChange(event);
+
+        //extract selected date
+        const newDate = new Date(event.target.value);
+
+        //Extract Filling Data
+        const fillingData = Common.extractFillingData(this.props.spreadsheetData,newDate);
+
+        //update store
+        this.props.updateAdminData("fillingData",fillingData.fillingData);
+        this.props.updateAdminData("templateView",fillingData.templateView);
+    };
 
     handleChange = (event) => {
         const name= event.target.name;
@@ -26,7 +42,10 @@ class Admin extends Component {
             RockyStatus: this.props.RockyStatus,
             NpdStatus: this.props.NpdStatus,
             TolunaStatus: this.props.TolunaStatus,
-            toAdress: this.props.toAdress
+            toAdress: this.props.toAdress,
+            spreadsheetId: this.props.spreadsheetId,
+            spreadsheetTabName : this.props.spreadsheetTabName,
+
         });
 
         this.props.toggleEmailTemplateView();
@@ -46,7 +65,7 @@ class Admin extends Component {
                             type="date"
                             value={this.props.selectedDate}
                             name="selectedDate"
-                            onChange={this.handleChange}
+                            onChange={this.handleDateChange}
                             InputLabelProps={{
                                 shrink: true,
                             }}
@@ -79,10 +98,30 @@ class Admin extends Component {
                     </Grid>
                     <Grid item sm style={{margin: 50, maxWidth: 500}}>
                         <Typography variant="subheading" gutterBottom>
+                            Spread Sheet Data
+                        </Typography>
+                        <TextField
+                            id="rocky-status"
+                            label="Spread Sheet Id"
+                            margin="normal"
+                            fullWidth
+                            name="spreadsheetId"
+                            onChange={this.handleChange}
+                            value={this.props.spreadsheetId}
+                        />
+                        <TextField
+                            id="rocky-status"
+                            label="Spread Sheet Tab Name"
+                            margin="normal"
+                            fullWidth
+                            name="spreadsheetTabName"
+                            onChange={this.handleChange}
+                            value={this.props.spreadsheetTabName}
+                        />
+
+                        <Typography variant="subheading" gutterBottom>
                             Email
                         </Typography>
-
-
                         <TextField
                             id="rocky-status"
                             label="Rocky for PP Client State"
@@ -145,7 +184,8 @@ class Admin extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        spreadsheetUrl: state.admin.spreadsheetUrl,
+        spreadsheetId: state.admin.spreadsheetId,
+        spreadsheetTabName : state.admin.spreadsheetTabName,
         emailView: state.admin.emailView,
         fromAddress: state.admin.fromAddress,
         toAddress: state.admin.toAddress,
@@ -157,7 +197,6 @@ const mapStateToProps = (state) => {
         fillingData : state.admin.fillingData,
         templateView: state.admin.templateView,
         spreadsheetData: state.app.spreadsheetData
-
     };
 };
 

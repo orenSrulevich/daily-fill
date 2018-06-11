@@ -63,11 +63,11 @@ handleClientLoad();
 
 export default {
     initGapi:(callBack)=>{
-        console.log('initGapi')
+       //console.log('initGapi')
       window.gapi.load('client:auth2', ()=>{initClient(callBack);});
     },
     getSpredSheetData: () => {
-        console.log('getSpredSheetData')
+        //console.log('getSpredSheetData')
         window.gapi.auth2.getAuthInstance().signIn();
         return window.gapi.client.sheets.spreadsheets.values.get(params);;
     },
@@ -85,49 +85,6 @@ export default {
             "values":values
         };
         return window.gapi.client.sheets.spreadsheets.values.update(localParams, valueRangeBody);
-    },
-    GetEmailTemplateData: () => {
-        return new Promise((res, rej) => {
-                const data = [
-                    {
-                        name: "Carmel",
-                        text : "deploy new data push tyo codebook prod COD-576 Staging very slow with IP .\n" +
-                        "PS-10687\n" +
-                        "Soft Launch - MC (Multi Country) - Apply to all checkbox is not showing\n" +
-                        "PS-10569\n" +
-                        "NPD/Rocky - no available panelists in Random mode for out-go quota\n" +
-                        "deep learning feasiiblity"
-                    },
-                    {
-                        name: "Danny",
-                        text : "deploy new data push tyo codebook prod COD-576 Staging very slow with IP .\n" +
-                        "PS-10687\n" +
-                        "Soft Launch - MC (Multi Country) - Apply to all checkbox is not showing\n" +
-                        "PS-10569\n" +
-                        "NPD/Rocky - no available panelists in Random mode for out-go quota\n" +
-                        "deep learning feasiiblity"
-                    },
-                    {
-                        name: "Barak",
-                        text : "deploy new data push tyo codebook prod COD-576 Staging very slow with IP .\n" +
-                        "PS-10687\n" +
-                        "Soft Launch - MC (Multi Country) - Apply to all checkbox is not showing\n" +
-                        "PS-10569\n" +
-                        "NPD/Rocky - no available panelists in Random mode for out-go quota\n" +
-                        "deep learning feasiiblity"
-                    },
-                    {
-                        name: "Oren",
-                        text : "deploy new data push tyo codebook prod COD-576 Staging very slow with IP .\n" +
-                        "PS-10687\n" +
-                        "Soft Launch - MC (Multi Country) - Apply to all checkbox is not showing\n" +
-                        "PS-10569\n" +
-                        "NPD/Rocky - no available panelists in Random mode for out-go quota\n" +
-                        "deep learning feasiiblity"
-                    }
-                ];
-                setTimeout(() => res(data), 2000)
-            }
-        )
     }
+
 }
