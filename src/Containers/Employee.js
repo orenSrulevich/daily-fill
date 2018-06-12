@@ -37,17 +37,50 @@ class Employee extends Component {
 
     updateDailyScrum = () => {
         this.saveToCookie();
-        const range = Common.getCellRange("Oren",this.props.spreadsheetData,Common.getDateAsString(true));
+        const range = Common.getCellRange("Oren", this.props.spreadsheetData, Common.getDateAsString(true));
         const spredSheetRange = {
-            row : range.row + 1,
+            row: range.row + 1,
             col: Common.getColumnAsLatter(range.col)
         };
-        SpreadSheet.updatCellData(this.props.dailyText,spredSheetRange).then((d) => {
+        SpreadSheet.updatCellData(this.props.dailyText, spredSheetRange).then((d) => {
             console.log("worked : ", d)
         }, (d) => {
             console.log("not working : ", d)
         });
 
+    };
+
+    handleChange = (event) => {
+        //update store
+        const name = event.target.name;
+        this.props.updateEmployee(name, event.target.value);
+
+        this.updateDailyText(event);
+    };
+
+
+    updateDailyText = (event) => {
+        const name = event.target.name;
+
+        //extract selected date
+        let dateAsString = Common.getDateAsString(true, new Date(this.props.selectedDate));
+        let employeeName = this.props.employeeName;
+
+        if (name == "selectedDate") {
+            //extract selected date
+            dateAsString = Common.getDateAsString(true, new Date(event.target.value));
+        }
+
+        if (name == "employeeName") {
+            //extract selected date
+            employeeName = event.target.value;
+        }
+
+        //Extract Filling Data
+        const dailyText = Common.extractSpecificDateText(this.props.spreadsheetData, dateAsString, employeeName);
+
+        //update store
+        this.props.updateEmployee("dailyText", dailyText);
     };
 
     render() {
@@ -62,25 +95,19 @@ class Employee extends Component {
                             id="date"
                             label="Selected Date"
                             type="date"
+                            name="selectedDate"
                             defaultValue={this.props.selectedDate}
-                            onChange={(e) => {
-                                this.props.updateEmployee('selectedDate', e.target.value)
-                            }}
+                            onChange={this.handleChange}
                             InputLabelProps={{
                                 shrink: true,
                             }}
-                            //fullWidth
                         />
                         <TextField
                             id="with-placeholder"
                             label="Employee Name"
                             margin="normal"
-                            //fullWidth
-                            onChange={
-                                (e) => {
-                                    this.props.updateEmployee('employeeName', e.target.value)
-                                }
-                            }
+                            onChange={this.handleChange}
+                            name="employeeName"
                             value={this.props.employeeName}
                         />
                         <TextField
@@ -88,14 +115,12 @@ class Employee extends Component {
                             select
                             label="Project"
                             value={this.props.project}
-                            onChange={(e) => {
-                                this.props.updateEmployee('project', e.target.value)
-                            }}
+                            onChange={this.handleChange}
+                            name="project"
                             SelectProps={{
                                 native: true,
 
                             }}
-                            //fullWidth
                             margin="normal">
                             {this.projects.map(option => (
                                 <option key={option.value} value={option.value}>

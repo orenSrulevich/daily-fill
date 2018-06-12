@@ -13,7 +13,7 @@ const init = () => {
 
     const cookieData = CookieHandler.retrieve();
 
-    var today = Common.getDateAsString();
+    const today = Common.getDateAsString();
     employeeReducerInitialState.selectedDate = today;
 
     if (cookieData) {
@@ -22,7 +22,7 @@ const init = () => {
     }
 
     return employeeReducerInitialState;
-}
+};
 
 const employeeReducerInitialState = init();
 
