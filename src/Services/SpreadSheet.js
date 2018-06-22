@@ -1,3 +1,5 @@
+
+
 const params = {
     // The ID of the spreadsheet to retrieve data from.
     spreadsheetId: '1J6RqvJ871iJ5w-ZdhbzACDEHHKhgmRygPBG5VQVcRoU',  // TODO: Update placeholder value.
@@ -66,12 +68,12 @@ export default {
        //console.log('initGapi')
       window.gapi.load('client:auth2', ()=>{initClient(callBack);});
     },
-    getSpredSheetData: () => {
+    getSpredSheetData: (params) => {
         //console.log('getSpredSheetData')
         window.gapi.auth2.getAuthInstance().signIn();
-        return window.gapi.client.sheets.spreadsheets.values.get(params);;
+        return window.gapi.client.sheets.spreadsheets.values.get(params);
     },
-    updatCellData: (newText,range)=>{
+    updatCellData: (newText,range,params)=>{
         window.gapi.auth2.getAuthInstance().signIn();
         const localParams = {
             ...params,
@@ -86,5 +88,4 @@ export default {
         };
         return window.gapi.client.sheets.spreadsheets.values.update(localParams, valueRangeBody);
     }
-
 }

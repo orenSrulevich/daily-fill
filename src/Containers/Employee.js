@@ -14,12 +14,12 @@ class Employee extends Component {
         this.getFromJira = this.getFromJira.bind(this);
     }
 
-    projects = [
-        {
-            value: 'SX',
-            label: 'sx',
-        }
-    ];
+    // projects = [
+    //     {
+    //         value: 'SX',
+    //         label: 'sx',
+    //     }
+    // ];
 
     saveToCookie = () => {
         CookieHandler.save(this.props);
@@ -42,7 +42,12 @@ class Employee extends Component {
             row: range.row + 1,
             col: Common.getColumnAsLatter(range.col)
         };
-        SpreadSheet.updatCellData(this.props.dailyText, spredSheetRange).then((d) => {
+        const params = {
+            spreadsheetId: this.props.spreadsheetId,
+            range: this.props.spreadsheetTabName
+        };
+
+        SpreadSheet.updatCellData(this.props.dailyText, spredSheetRange,params).then((d) => {
             console.log("worked : ", d)
         }, (d) => {
             console.log("not working : ", d)
@@ -110,24 +115,24 @@ class Employee extends Component {
                             name="employeeName"
                             value={this.props.employeeName}
                         />
-                        <TextField
-                            id="select-currency-native"
-                            select
-                            label="Project"
-                            value={this.props.project}
-                            onChange={this.handleChange}
-                            name="project"
-                            SelectProps={{
-                                native: true,
+                        {/*<TextField*/}
+                            {/*id="select-currency-native"*/}
+                            {/*select*/}
+                            {/*label="Project"*/}
+                            {/*value={this.props.project}*/}
+                            {/*onChange={this.handleChange}*/}
+                            {/*name="project"*/}
+                            {/*SelectProps={{*/}
+                                {/*native: true,*/}
 
-                            }}
-                            margin="normal">
-                            {this.projects.map(option => (
-                                <option key={option.value} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </TextField>
+                            {/*}}*/}
+                            {/*margin="normal">*/}
+                            {/*{this.projects.map(option => (*/}
+                                {/*<option key={option.value} value={option.value}>*/}
+                                    {/*{option.label}*/}
+                                {/*</option>*/}
+                            {/*))}*/}
+                        {/*</TextField>*/}
 
                     </Grid>
                     <Grid item sm style={{margin: 50, maxWidth: 500}}>
@@ -166,7 +171,9 @@ const mapStateToProps = (state) => {
         selectedDate: state.employee.selectedDate,
         dailyText: state.employee.dailyText,
         isLoading: state.employee.isLoading,
-        spreadsheetData: state.app.spreadsheetData
+        spreadsheetData: state.app.spreadsheetData,
+        spreadsheetId: state.app.spreadsheetId,
+        range: state.app.spreadsheetTabName
     };
 };
 

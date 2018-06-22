@@ -10,10 +10,7 @@ const init = () => {
         emailTemplateData: [],
         fillingData: [],
         templateView: false,
-
         /// Fill from cookie is possible
-        spreadsheetId: cookieData.spreadsheetId || "",
-        spreadsheetTabName: cookieData.spreadsheetTabName || "",
         fromAddress: cookieData.fromAddress || "",
         toAddress: cookieData.toAddress || "",
         RockyStatus: cookieData.RockyStatus || "",

@@ -9,6 +9,7 @@ import CookieHandler from "../Services/CookieHandler";
 import {connect} from "react-redux";
 import {toggleEmailTemplateView, updateAdmin, updateDate} from "../Actions/adminAction";
 import Common from "../Services/Common";
+import {updateApp} from "../Actions/appAction";
 
 
 class Admin extends Component {
@@ -36,20 +37,29 @@ class Admin extends Component {
         this.props.updateAdminData(name,event.target.value);
     };
 
+    handleChangeAndUpdateApp = (event) => {
+        const name= event.target.name;
+        this.props.updateAppData(name,event.target.value);
+    };
+
     generateEmail = () => {
         //save products Status to cookie
-        CookieHandler.update({
+        this.updateCookie();
+
+        this.props.toggleEmailTemplateView();
+    };
+
+    updateCookie = () =>{
+        const cookieData = {
             RockyStatus: this.props.RockyStatus,
             NpdStatus: this.props.NpdStatus,
             TolunaStatus: this.props.TolunaStatus,
             toAdress: this.props.toAdress,
             spreadsheetId: this.props.spreadsheetId,
-            spreadsheetTabName : this.props.spreadsheetTabName,
-
-        });
-
-        this.props.toggleEmailTemplateView();
-    }
+            spreadsheetTabName : this.props.spreadsheetTabName
+        };
+        CookieHandler.update(cookieData);
+    };
 
     render() {
         return (
@@ -106,7 +116,7 @@ class Admin extends Component {
                             margin="normal"
                             fullWidth
                             name="spreadsheetId"
-                            onChange={this.handleChange}
+                            onChange={this.handleChangeAndUpdateApp}
                             value={this.props.spreadsheetId}
                         />
                         <TextField
@@ -115,10 +125,13 @@ class Admin extends Component {
                             margin="normal"
                             fullWidth
                             name="spreadsheetTabName"
-                            onChange={this.handleChange}
+                            onChange={this.handleChangeAndUpdateApp}
                             value={this.props.spreadsheetTabName}
                         />
-
+                        <Button variant="raised" color="primary" onClick={this.updateCookie}>
+                            <span>Save</span>
+                        </Button>
+                        <br /><br /><br />
                         <Typography variant="subheading" gutterBottom>
                             Email
                         </Typography>
@@ -167,7 +180,7 @@ class Admin extends Component {
 
                     </Grid>
                 </Grid>
-                <Grid container spacing={4} justify='center'>
+                <Grid container spacing={8} justify='center'>
                     {this.props.templateView ?
                         <EmailTemplate
                             data={this.props}/>
@@ -184,8 +197,6 @@ class Admin extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        spreadsheetId: state.admin.spreadsheetId,
-        spreadsheetTabName : state.admin.spreadsheetTabName,
         emailView: state.admin.emailView,
         fromAddress: state.admin.fromAddress,
         toAddress: state.admin.toAddress,
@@ -196,6 +207,8 @@ const mapStateToProps = (state) => {
         TolunaStatus: state.admin.TolunaStatus,
         fillingData : state.admin.fillingData,
         templateView: state.admin.templateView,
+        spreadsheetId: state.app.spreadsheetId,
+        spreadsheetTabName : state.app.spreadsheetTabName,
         spreadsheetData: state.app.spreadsheetData
     };
 };
@@ -205,11 +218,14 @@ const mapDispatchToProps = (dispatch) => {
         updateAdminData: (propName, propValue) => {
             dispatch(updateAdmin(propName, propValue))
         },
+        updateAppData :(propName, propValue)=>{
+            dispatch(updateApp(propName, propValue))
+        },
         toggleEmailTemplateView :()=>{
             dispatch(toggleEmailTemplateView())
         }
     }
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Admin)
 

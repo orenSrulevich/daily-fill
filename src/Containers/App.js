@@ -14,8 +14,12 @@ class App extends Component {
 
 
     componentDidMount() {
+        const params = {
+            spreadsheetId: this.props.spreadsheetId,
+            range: this.props.spreadsheetTabName
+        };
         SpreadSheet.initGapi(() => {
-            SpreadSheet.getSpredSheetData().then((data) => {
+            SpreadSheet.getSpredSheetData(params).then((data) => {
                     this.props.updateAppData('spreadsheetData',data);
                 }
             );
@@ -39,7 +43,9 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        tabValue: state.ui.tabValue
+        tabValue: state.ui.tabValue,
+        spreadsheetId : state.app.spreadsheetId,
+        spreadsheetTabName : state.app.spreadsheetTabName,
     }
 };
 

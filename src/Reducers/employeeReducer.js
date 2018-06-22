@@ -5,7 +5,7 @@ import Common from "../Services/Common"
 const init = () => {
     let employeeReducerInitialState = {
         employeeName: "",
-        project: "SX",
+        //project: "SX",
         selectedDate: "",
         dailyText: "",
         isLoading: false

@@ -13,10 +13,10 @@ export default {
     },
     update: (data) => {
         const cookieValue = getCookie(cookieName);
-        if (!cookieValue) {
-            return;
+        let currentCookie = {};
+        if (cookieValue) {
+            currentCookie = JSON.parse(getCookie(cookieName));
         }
-        let currentCookie = JSON.parse(getCookie(cookieName));
         setCookie(cookieName, JSON.stringify({...currentCookie, ...data}));
     }
 }
